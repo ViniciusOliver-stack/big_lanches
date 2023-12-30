@@ -5,9 +5,16 @@ import { useAppContext } from "@/app/hook/AppContext"
 import { Plus } from "lucide-react"
 import { Modal } from "../Modal"
 
+type Food = {
+  id: string
+  name: string
+  price: number // Deve ser number se price for um número
+  ingredients: string
+}
+
 const SteakTabs = () => {
   const [activeTab, setActiveTab] = useState("comum")
-  const [selectedFood, setSelectedFood] = useState(null)
+  const [selectedFood, setSelectedFood] = useState<Food | null>(null)
   const { listBifeArtesanal, listBifeComum, listBifeFrango, listBifePicanha } =
     useAppContext()
 
@@ -22,8 +29,13 @@ const SteakTabs = () => {
     setActiveTab(tabId)
   }
 
-  function openModal(food) {
-    setSelectedFood(food)
+  function openModal(food: Food) {
+    const foodWithNumberPrice: Food = {
+      ...food,
+      price: Number(food.price), // Convertendo para número
+    }
+
+    setSelectedFood(foodWithNumberPrice)
   }
 
   function closeModal() {
@@ -73,7 +85,7 @@ const SteakTabs = () => {
                         <div>
                           <p>{food.name}</p>
                           <p className="text-xs w-10/12">{food.ingredients}</p>
-                          <p>R$ {food.price}</p>
+                          <p>R$ {food.price.toFixed(2)}</p>
                         </div>
                       </div>
                       <button onClick={() => openModal(food)}>

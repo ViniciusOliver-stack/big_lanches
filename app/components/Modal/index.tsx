@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react"
 import { FiMinus, FiPlus } from "react-icons/fi"
 
-interface ModalProps {
+type Food = {
+  id: string
+  name: string
+  price: number
+  ingredients: string
+}
+
+type ModalProps = {
   closeModal: () => void
-  food: {
-    name: string
-    price: number
-    ingredients: string
-  }
+  food: Food
 }
 
 export function Modal({ closeModal, food }: ModalProps) {
@@ -16,7 +19,7 @@ export function Modal({ closeModal, food }: ModalProps) {
 
   useEffect(() => {
     // Add event listener to handle the 'Escape' key press to close the modal
-    const handleEscapeKey = (event: KeyboardEvent) => {
+    function handleEscapeKey(event: KeyboardEvent) {
       if (event.key === "Escape") {
         closeModal()
       }
@@ -31,23 +34,23 @@ export function Modal({ closeModal, food }: ModalProps) {
     }
   }, [closeModal])
 
-  const increaseQuantity = () => {
+  function increaseQuantity() {
     setQuantity(quantity + 1)
   }
 
-  const decreaseQuantity = () => {
+  function decreaseQuantity() {
     if (quantity > 1) {
       setQuantity(quantity - 1)
     }
   }
 
-  const handleObservationChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
+  const priceQuantity = food.price * quantity
+
+  function handleObservationChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     setObservation(e.target.value)
   }
 
-  const handleAddClick = () => {
+  function handleAddClick() {
     // Add functionality here
     // You can use 'quantity' and 'observation' in your logic
   }
@@ -101,7 +104,7 @@ export function Modal({ closeModal, food }: ModalProps) {
                     Valor do lanche:
                   </p>
                   <p className="text-lg font-semibold text-gray-900">
-                    R$ {food.price * quantity}
+                    R$ {priceQuantity.toFixed(2)}
                   </p>
                 </div>
                 <div className="flex items-center">
