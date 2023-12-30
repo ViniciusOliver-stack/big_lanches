@@ -4,62 +4,62 @@ export const listBifeComum = [
   {
     id: uuidv4(),
     name: "Hambúrguer",
-    price: "12.00",
+    price: 12.0,
     ingredients: "Pão, bife comum, alface, tomate, batata palha e milho verde.",
   },
   {
     id: uuidv4(),
     name: "X-Burguer",
-    price: "15.00",
+    price: 15.0,
     ingredients:
       "Pão, bife comum, queijo, alface, tomate, batata palha e milho verde.",
   },
   {
     id: uuidv4(),
     name: "X-Salada",
-    price: "12.00",
+    price: 12.0,
     ingredients:
       "Pão, bife comum, queijo, alface, presunto, tomate, batata palha e milho verde.",
   },
   {
     id: uuidv4(),
     name: "Egg Burguer",
-    price: "16.00",
+    price: 16.0,
     ingredients:
       "Pão, bife comum, ovo, alface, tomate, batata palha e milho verde.",
   },
   {
     id: uuidv4(),
     name: "X-Egg Burguer",
-    price: "20.00",
+    price: 20.0,
     ingredients:
       "Pão, bife comum, ovo, queijo, alface, tomate, batata palha e milho verde.",
   },
   {
     id: uuidv4(),
     name: "X-Bacon Burguer",
-    price: "20.00",
+    price: 20.0,
     ingredients:
       "Pão, bife comum, bacon, queijo, alface, tomate, batata palha e milho verde.",
   },
   {
     id: uuidv4(),
     name: "Bacon Burguer",
-    price: "17.00",
+    price: 17.0,
     ingredients:
       "Pão, bife comum, bacaon, alface, tomate, batata palha e milho verde.",
   },
   {
     id: uuidv4(),
     name: "X-Egg Bacon Burguer",
-    price: "24.00",
+    price: 24.0,
     ingredients:
       "Pão, bife comum, bacon, ovo, queijo, alface, tomate, batata palha e milho verde.",
   },
   {
     id: uuidv4(),
     name: "X-Tudo",
-    price: "26.00",
+    price: 26.0,
     ingredients:
       "Pão, bife comum, bacon, ovo, queijo, presunto, alface, tomate, batata palha e milho verde.",
   },
