@@ -1,11 +1,18 @@
-import { listDrinks } from "@utils/listDrinks"
-import { listFoodMenu } from "@utils/listFood"
-import { listHotDog } from "@utils/listHotDog"
 import { ReactNode, createContext, useContext } from "react"
+
+import { listDrinks } from "@utils/listDrinks"
+import { listHotDog } from "@utils/listHotDog"
+import { listBifeComum } from "@utils/listBifeComum"
+import { listBifePicanha } from "@utils/listBifePicanha"
+import { listBifeFrango } from "@utils/listBifeFrango"
+import { listBifeArtesanal } from "@utils/listBifeArtesanal"
 
 type AppContextType = {
   listDrinks: typeof listDrinks
-  listFoodMenu: typeof listFoodMenu
+  listBifeComum: typeof listBifeComum
+  listBifePicanha: typeof listBifePicanha
+  listBifeFrango: typeof listBifeFrango
+  listBifeArtesanal: typeof listBifeArtesanal
   listHotDog: typeof listHotDog
 }
 
@@ -17,7 +24,16 @@ type AppContextProviderProps = {
 
 export function AppContextProvider({ children }: AppContextProviderProps) {
   return (
-    <AppContext.Provider value={{ listDrinks, listFoodMenu, listHotDog }}>
+    <AppContext.Provider
+      value={{
+        listDrinks,
+        listBifeArtesanal,
+        listBifeComum,
+        listBifeFrango,
+        listBifePicanha,
+        listHotDog,
+      }}
+    >
       {children}
     </AppContext.Provider>
   )
