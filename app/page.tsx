@@ -5,7 +5,7 @@ import { Header } from "./components/Header"
 import { FilterFood } from "./components/FilterFood"
 import { Food } from "./components/Food"
 import Cart from "./cart/page"
-import { AppContextProvider, useAppContext } from "./hook/AppContext"
+import { AppContextProvider } from "./hook/AppContext"
 
 export default function Home() {
   return (
@@ -21,7 +21,6 @@ export default function Home() {
               <FilterFood />
             </ul>
           </section>
-
           <Food />
         </div>
 
