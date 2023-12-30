@@ -1,18 +1,18 @@
 import { CardDrinks } from "../CardDrinks"
-import { CardFood } from "../CardFood"
+import SteakTabs from "../SteakTabs"
 
 export function Food() {
   return (
-    <section className="px-8 flex flex-col gap-10 mb-12">
+    <section className="px-8 w-full flex flex-col gap-10 mb-12">
       <div>
         <h2 className="text-2xl">Lanches</h2>
-        <CardFood typeFood="Lanche" />
+        <SteakTabs />
       </div>
 
       <div>
         <h2 className="text-2xl">Cachorro-quente</h2>
 
-        <CardFood typeFood="HotDog" />
+        {/* <CardFood typeFood="HotDog" /> */}
       </div>
 
       <div>
