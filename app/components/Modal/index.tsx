@@ -1,13 +1,22 @@
 import { useState, useEffect } from "react"
 import { FiMinus, FiPlus } from "react-icons/fi"
 
-export function Modal({ closeModal, food }) {
+interface ModalProps {
+  closeModal: () => void
+  food: {
+    name: string
+    price: number
+    ingredients: string
+  }
+}
+
+export function Modal({ closeModal, food }: ModalProps) {
   const [quantity, setQuantity] = useState(1)
   const [observation, setObservation] = useState("")
 
   useEffect(() => {
     // Add event listener to handle the 'Escape' key press to close the modal
-    const handleEscapeKey = (event) => {
+    const handleEscapeKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         closeModal()
       }
@@ -32,7 +41,9 @@ export function Modal({ closeModal, food }) {
     }
   }
 
-  const handleObservationChange = (e) => {
+  const handleObservationChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
     setObservation(e.target.value)
   }
 
