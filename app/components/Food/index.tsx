@@ -1,4 +1,5 @@
 import { CardDrinks } from "../CardDrinks"
+import { CardFood } from "../CardFood"
 import SteakTabs from "../SteakTabs"
 
 export function Food() {
@@ -12,7 +13,7 @@ export function Food() {
       <div>
         <h2 className="text-2xl">Cachorro-quente</h2>
 
-        {/* <CardFood typeFood="HotDog" /> */}
+        <CardFood />
       </div>
 
       <div>

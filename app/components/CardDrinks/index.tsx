@@ -3,11 +3,7 @@ import Image from "next/image"
 import { useState } from "react"
 import { FiChevronDown, FiMinus, FiPlus } from "react-icons/fi"
 
-type CardDrinksProps = {
-  cardId: string // Substitua "string" pelo tipo apropriado
-}
-
-export function CardDrinks({ cardId }: CardDrinksProps) {
+export function CardDrinks() {
   const { listDrinks } = useAppContext()
   const [expandedCard, setExpandedCard] = useState<string | null>(null)
 
