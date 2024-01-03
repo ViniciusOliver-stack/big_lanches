@@ -1,3 +1,5 @@
+"use client"
+
 import { ArrowLeft } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -14,8 +16,11 @@ import {
 import { PiBankDuotone, PiMoney } from "react-icons/pi"
 
 import { Input } from "../components/Input"
+import { useAppContext } from "../hook/AppContext"
 
 export default function Cart() {
+  const { cart } = useAppContext()
+
   return (
     <div className="px-4 py-6">
       <Link href="/" className="lg:hidden">
@@ -35,137 +40,48 @@ export default function Cart() {
         <h3>Finalize seu pedido</h3>
 
         <div className="flex flex-col gap-5 mt-4 shadow-xl p-4 rounded-lg">
-          <div className="flex items-center gap-2 justify-between mt-4">
+          {cart.length === 0 ? (
+            <div>Ops, não tem nenhum lanhce aqui.</div>
+          ) : (
             <div>
-              <Image
-                src="https://i.imgur.com/GTgaZIH.png"
-                width={66}
-                height={66}
-                alt=""
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <p>Hambúrguer</p>
-              <p className="text-xs w-[200px]">
-                Pão, bife comum, alface, tomate, batata palha e milho verde.
-              </p>
-              <p>R$ 12,00</p>
-            </div>
-            <div className="cursor-pointer flex flex-col gap-4 items-end">
-              <div className="flex flex-col items-center gap-2">
-                <div className="flex gap-2">
-                  <button>
-                    <FiMinus />
-                  </button>
-                  <span>0</span>
-                  <button>
-                    <FiPlus />
-                  </button>
+              {cart.map((item) => (
+                <div
+                  className="flex items-center gap-2 justify-between mt-4"
+                  key={item.id}
+                >
+                  <div>
+                    <Image
+                      src="https://i.imgur.com/GTgaZIH.png"
+                      width={66}
+                      height={66}
+                      alt=""
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <p>{item.name}</p>
+                    <p className="text-xs w-[200px]">{item.ingredients}</p>
+                    <p>R$ {item.price}</p>
+                  </div>
+                  <div className="cursor-pointer flex flex-col gap-4 items-end">
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="flex gap-2">
+                        <button>
+                          <FiMinus />
+                        </button>
+                        <span>0</span>
+                        <button>
+                          <FiPlus />
+                        </button>
+                      </div>
+                    </div>
+                    <div className="text-2xl">
+                      <FiTrash />
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div className="text-2xl">
-                <FiTrash />
-              </div>
+              ))}
             </div>
-          </div>
-
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="2"
-            viewBox="0 0 368 2"
-            fill="none"
-            className="w-[90%]"
-          >
-            <path d="M0 1H368" stroke="#E6E5E5" />
-          </svg>
-
-          <div className="flex items-center gap-2 justify-between mt-4">
-            <div>
-              <Image
-                src="https://i.imgur.com/GTgaZIH.png"
-                width={66}
-                height={66}
-                alt=""
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <p>Hambúrguer</p>
-              <p className="text-xs w-[200px]">
-                Pão, bife comum, alface, tomate, batata palha e milho verde.
-              </p>
-              <p>R$ 12,00</p>
-            </div>
-            <div className="cursor-pointer flex flex-col gap-4 items-end">
-              <div className="flex flex-col items-center gap-2">
-                <div className="flex gap-2">
-                  <button>
-                    <FiMinus />
-                  </button>
-                  <span>0</span>
-                  <button>
-                    <FiPlus />
-                  </button>
-                </div>
-              </div>
-              <div className="text-2xl">
-                <FiTrash />
-              </div>
-            </div>
-          </div>
-
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="2"
-            viewBox="0 0 368 2"
-            fill="none"
-            className="w-[90%]"
-          >
-            <path d="M0 1H368" stroke="#E6E5E5" />
-          </svg>
-
-          <div className="flex items-center gap-2 justify-between mt-4">
-            <div>
-              <Image
-                src="https://i.imgur.com/GTgaZIH.png"
-                width={66}
-                height={66}
-                alt=""
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <p>Hambúrguer</p>
-              <p className="text-xs w-[200px]">
-                Pão, bife comum, alface, tomate, batata palha e milho verde.
-              </p>
-              <p>R$ 12,00</p>
-            </div>
-            <div className="cursor-pointer flex flex-col gap-4 items-end">
-              <div className="flex flex-col items-center gap-2">
-                <div className="flex gap-2">
-                  <button>
-                    <FiMinus />
-                  </button>
-                  <span>0</span>
-                  <button>
-                    <FiPlus />
-                  </button>
-                </div>
-              </div>
-              <div className="text-2xl">
-                <FiTrash />
-              </div>
-            </div>
-          </div>
-
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="2"
-            viewBox="0 0 368 2"
-            fill="none"
-            className="w-[90%]"
-          >
-            <path d="M0 1H368" stroke="#E6E5E5" />
-          </svg>
+          )}
 
           <div className="bg-yellow-dark rounded-2xl flex flex-col items-center py-5 px-7 text-center">
             <div>
