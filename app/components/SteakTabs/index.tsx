@@ -1,6 +1,5 @@
 import { useState } from "react"
 import Image from "next/image"
-import { FiMinus, FiPlus, FiTrash } from "react-icons/fi"
 import { useAppContext } from "@/app/hook/AppContext"
 import { Plus } from "lucide-react"
 import { Modal } from "../Modal"
@@ -8,19 +7,24 @@ import { Modal } from "../Modal"
 type Food = {
   id: string
   name: string
-  price: number // Deve ser number se price for um número
+  price: number
   ingredients: string
 }
 
 const SteakTabs = () => {
-  const [activeTab, setActiveTab] = useState("comum")
+  const [activeTab, setActiveTab] = useState("picanha")
   const [selectedFood, setSelectedFood] = useState<Food | null>(null)
-  const { listBifeArtesanal, listBifeComum, listBifeFrango, listBifePicanha } =
-    useAppContext()
+  const {
+    listBifeArtesanal,
+    listBifeComum,
+    listBifeFrango,
+    listBifePicanha,
+    addToCart,
+  } = useAppContext()
 
   const tabs = [
-    { id: "comum", label: "Bife Comum", list: listBifeComum },
     { id: "picanha", label: "Bife de Picanha", list: listBifePicanha },
+    { id: "comum", label: "Bife Comum", list: listBifeComum },
     { id: "frango", label: "Bife de Frango", list: listBifeFrango },
     { id: "artesanal", label: "Bife Artesanal", list: listBifeArtesanal },
   ]
@@ -35,6 +39,7 @@ const SteakTabs = () => {
       price: Number(food.price), // Convertendo para número
     }
 
+    addToCart(foodWithNumberPrice)
     setSelectedFood(foodWithNumberPrice)
   }
 
