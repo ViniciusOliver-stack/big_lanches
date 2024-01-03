@@ -51,8 +51,7 @@ export function Modal({ closeModal, food }: ModalProps) {
   }
 
   function handleAddClick() {
-    // Add functionality here
-    // You can use 'quantity' and 'observation' in your logic
+    closeModal()
   }
 
   useEffect(() => {
@@ -152,7 +151,6 @@ export function Modal({ closeModal, food }: ModalProps) {
             </div>
           </div>
         </div>
-        {/* Overlay */}
       </div>
     </>
   )
