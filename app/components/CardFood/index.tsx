@@ -21,7 +21,6 @@ export function CardFood() {
       price: Number(food.price), // Convertendo para número
     }
 
-    addToCart(foodWithNumberPrice)
     setSelectedFood(foodWithNumberPrice)
   }
 

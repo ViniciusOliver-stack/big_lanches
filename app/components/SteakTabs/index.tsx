@@ -11,9 +11,14 @@ type Food = {
   ingredients: string
 }
 
+type FoodWithQuantity = Food & { quantity: number }
+
 const SteakTabs = () => {
   const [activeTab, setActiveTab] = useState("picanha")
-  const [selectedFood, setSelectedFood] = useState<Food | null>(null)
+  const [selectedFood, setSelectedFood] = useState<FoodWithQuantity | null>(
+    null
+  )
+
   const {
     listBifeArtesanal,
     listBifeComum,
@@ -34,12 +39,12 @@ const SteakTabs = () => {
   }
 
   function openModal(food: Food) {
-    const foodWithNumberPrice: Food = {
+    const foodWithNumberPrice: FoodWithQuantity = {
       ...food,
-      price: Number(food.price), // Convertendo para número
+      price: Number(food.price),
+      quantity: 1,
     }
 
-    addToCart(foodWithNumberPrice)
     setSelectedFood(foodWithNumberPrice)
   }
 
@@ -104,7 +109,12 @@ const SteakTabs = () => {
           </div>
         ))}
 
-        {selectedFood && <Modal closeModal={closeModal} food={selectedFood} />}
+        {selectedFood && (
+          <Modal
+            closeModal={closeModal}
+            food={selectedFood as FoodWithQuantity}
+          />
+        )}
       </section>
     </div>
   )

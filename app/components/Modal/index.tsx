@@ -1,3 +1,4 @@
+import { useAppContext } from "@/app/hook/AppContext"
 import { useState, useEffect } from "react"
 import { FiMinus, FiPlus } from "react-icons/fi"
 
@@ -8,27 +9,28 @@ type Food = {
   ingredients: string
 }
 
+type FoodWithQuantity = Food & { quantity: number }
+
 type ModalProps = {
   closeModal: () => void
-  food: Food
+  food: FoodWithQuantity
 }
 
 export function Modal({ closeModal, food }: ModalProps) {
-  const [quantity, setQuantity] = useState(1)
+  const [quantity, setQuantity] = useState(food.quantity || 1)
   const [observation, setObservation] = useState("")
 
+  const { addToCart } = useAppContext()
+
   useEffect(() => {
-    // Add event listener to handle the 'Escape' key press to close the modal
     function handleEscapeKey(event: KeyboardEvent) {
       if (event.key === "Escape") {
         closeModal()
       }
     }
 
-    // Attach the event listener
     document.addEventListener("keydown", handleEscapeKey)
 
-    // Cleanup the event listener on component unmount
     return () => {
       document.removeEventListener("keydown", handleEscapeKey)
     }
@@ -51,14 +53,14 @@ export function Modal({ closeModal, food }: ModalProps) {
   }
 
   function handleAddClick() {
+    const updatedFood: FoodWithQuantity = { ...food, quantity }
+    addToCart(updatedFood)
     closeModal()
   }
 
   useEffect(() => {
-    // Add a class to the body element to disable scrolling
     document.body.style.overflow = "hidden"
 
-    // Cleanup: Remove the class on component unmount
     return () => {
       document.body.style.overflow = ""
     }
