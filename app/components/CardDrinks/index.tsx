@@ -7,7 +7,7 @@ export function CardDrinks() {
   const { listDrinks } = useAppContext()
   const [expandedCard, setExpandedCard] = useState<string | null>(null)
 
-  const toggleExpansion = (newCard: string) => {
+  function toggleExpansion(newCard: string) {
     setExpandedCard((prevExpanded: string | null) =>
       prevExpanded === newCard ? null : newCard
     )
