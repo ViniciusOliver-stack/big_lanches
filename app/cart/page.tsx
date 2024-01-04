@@ -19,7 +19,25 @@ import { Input } from "../components/Input"
 import { useAppContext } from "../hook/AppContext"
 
 export default function Cart() {
-  const { cart } = useAppContext()
+  const { cart, updateCartItemQuantity, removeFromCart } = useAppContext()
+
+  function handleIncrement(itemId: string) {
+    const selectedItem = cart.find((item) => item.id === itemId)
+    const newQuantity = (selectedItem?.quantity ?? 0) + 1
+
+    updateCartItemQuantity(itemId, newQuantity)
+  }
+
+  function handleDecrement(itemId: string) {
+    const selectedItem = cart.find((item) => item.id === itemId)
+    const newQuantity = Math.max((selectedItem?.quantity ?? 1) - 1, 1)
+
+    updateCartItemQuantity(itemId, newQuantity)
+  }
+
+  function handleRemove(itemId: string) {
+    removeFromCart(itemId)
+  }
 
   return (
     <div className="px-4 py-6">
@@ -41,7 +59,7 @@ export default function Cart() {
 
         <div className="flex flex-col gap-5 mt-4 shadow-xl p-4 rounded-lg">
           {cart.length === 0 ? (
-            <div>Ops, não tem nenhum lanhce aqui.</div>
+            <div>Ops, não tem nenhum lanche aqui.</div>
           ) : (
             <div>
               {cart.map((item) => (
@@ -60,22 +78,27 @@ export default function Cart() {
                   <div className="flex flex-col gap-1">
                     <p>{item.name}</p>
                     <p className="text-xs w-[200px]">{item.ingredients}</p>
-                    <p>R$ {item.price}</p>
+                    <p>
+                      R$ {item.price.toFixed(2)} x {item.quantity} ={" "}
+                      {(item.price * item.quantity!).toFixed(2)}
+                    </p>
                   </div>
                   <div className="cursor-pointer flex flex-col gap-4 items-end">
                     <div className="flex flex-col items-center gap-2">
                       <div className="flex gap-2">
-                        <button>
+                        <button onClick={() => handleDecrement(item.id)}>
                           <FiMinus />
                         </button>
-                        <span>0</span>
-                        <button>
+                        <span>{item.quantity}</span>
+                        <button onClick={() => handleIncrement(item.id)}>
                           <FiPlus />
                         </button>
                       </div>
                     </div>
                     <div className="text-2xl">
-                      <FiTrash />
+                      <button onClick={() => handleRemove(item.id)}>
+                        <FiTrash />
+                      </button>
                     </div>
                   </div>
                 </div>
