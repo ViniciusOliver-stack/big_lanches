@@ -11,14 +11,19 @@ type Food = {
   ingredients: string
 }
 
+type FoodWithQuantity = Food & { quantity: number }
+
 export function CardFood() {
   const { listHotDog, addToCart } = useAppContext()
-  const [selectedFood, setSelectedFood] = useState<Food | null>(null)
+  const [selectedFood, setSelectedFood] = useState<FoodWithQuantity | null>(
+    null
+  )
 
   function openModal(food: Food) {
-    const foodWithNumberPrice: Food = {
+    const foodWithNumberPrice: FoodWithQuantity = {
       ...food,
-      price: Number(food.price), // Convertendo para número
+      price: Number(food.price),
+      quantity: 1,
     }
 
     setSelectedFood(foodWithNumberPrice)
@@ -60,7 +65,12 @@ export function CardFood() {
         )
       })}
 
-      {selectedFood && <Modal closeModal={closeModal} food={selectedFood} />}
+      {selectedFood && (
+        <Modal
+          closeModal={closeModal}
+          food={selectedFood as FoodWithQuantity}
+        />
+      )}
     </div>
   )
 }
