@@ -1,10 +1,12 @@
 "use client"
 
+import { useState, useEffect, ChangeEvent, useCallback } from "react"
 import { ArrowLeft } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import { ToastContainer, toast } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 
-import Logo from "../assets/logo.svg"
 import {
   FiCreditCard,
   FiDollarSign,
@@ -15,17 +17,106 @@ import {
 } from "react-icons/fi"
 import { PiBankDuotone, PiMoney } from "react-icons/pi"
 
+import Logo from "../assets/logo.svg"
 import { Input } from "../components/Input"
 import { useAppContext } from "../hook/AppContext"
 
+interface AddressState {
+  cep: string
+  address: string
+  number: string
+  complement: string
+  neighborhood: string
+  city: string
+  uf: string
+}
+
 export default function Cart() {
   const { cart, updateCartItemQuantity, removeFromCart } = useAppContext()
+  const [deliveryFee, setDeliveryFee] = useState(6) // Set the default delivery fee
+  const [subtotal, setSubtotal] = useState(0)
+  const [total, setTotal] = useState(subtotal + deliveryFee)
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>("")
+  const [addressState, setAddressState] = useState<AddressState>({
+    cep: "",
+    address: "",
+    number: "",
+    complement: "",
+    neighborhood: "",
+    city: "",
+    uf: "",
+  })
+  const [miniRefrigerantes, setMiniRefrigerantes] = useState(0)
+
+  const { cep, address, number, complement, neighborhood, city, uf } =
+    addressState
+
+  useEffect(() => {
+    const totalLanches = cart.reduce((total, item) => total + item.quantity!, 0)
+    const novaQuantidadeMiniRefrigerantes = totalLanches
+
+    setMiniRefrigerantes(novaQuantidadeMiniRefrigerantes)
+  }, [cart])
+
+  const fetchAddressInfo = useCallback(async () => {
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`)
+      const data = await response.json()
+
+      if (!data.erro) {
+        setAddressState((prev) => ({
+          ...prev,
+          address: data.logradouro,
+          number: data.numero || "",
+          complement: data.complemento || "",
+          neighborhood: data.bairro,
+          city: data.localidade,
+          uf: data.uf,
+        }))
+      }
+    } catch (error) {
+      console.error("Error fetching address:", error)
+    }
+  }, [cep])
+
+  useEffect(() => {
+    if (cep.length >= 5) {
+      fetchAddressInfo()
+    }
+  }, [cep, fetchAddressInfo])
+
+  const handleInputChange =
+    (key: keyof AddressState) => (e: ChangeEvent<HTMLInputElement>) => {
+      setAddressState((prev) => ({ ...prev, [key]: e.target.value }))
+    }
+
+  useEffect(() => {
+    const newSubtotal = cart.reduce(
+      (total, item) => total + item.price * item.quantity!,
+      0
+    )
+    setSubtotal(newSubtotal)
+
+    let newDeliveryFee = deliveryFee
+
+    if (neighborhood.toLowerCase() === "brumal" || cep === "35966-971") {
+      newDeliveryFee = 15
+    }
+
+    setTotal(newSubtotal + newDeliveryFee)
+
+    setDeliveryFee(newDeliveryFee)
+  }, [cart, deliveryFee, neighborhood, cep])
+
+  const handlePaymentMethodSelection = (method: string) => {
+    setSelectedPaymentMethod(method)
+  }
 
   function handleIncrement(itemId: string) {
-    const selectedItem = cart.find((item) => item.id === itemId)
-    const newQuantity = (selectedItem?.quantity ?? 0) + 1
-
-    updateCartItemQuantity(itemId, newQuantity)
+    updateCartItemQuantity(
+      itemId,
+      (cart.find((item) => item.id === itemId)?.quantity || 0) + 1
+    )
   }
 
   function handleDecrement(itemId: string) {
@@ -37,6 +128,47 @@ export default function Cart() {
 
   function handleRemove(itemId: string) {
     removeFromCart(itemId)
+  }
+
+  const handleFinishOrder = () => {
+    if (cart.length === 0) {
+      toast.error("Adicione itens ao carrinho antes de finalizar o pedido.")
+      return
+    }
+
+    if (!cep || !address || !selectedPaymentMethod) {
+      toast.error(
+        "Preencha todos os campos obrigatórios antes de finalizar o pedido."
+      )
+      return
+    }
+
+    const itemsText = cart
+      .map((item) => {
+        const itemText = `*${item.name}*%0AQuantidade: ${
+          item.quantity
+        }%0AValor: R$ ${(item.price * item.quantity!).toFixed(2)}`
+
+        // Inclua a observação se existir
+        if (item.observation) {
+          return `${itemText}%0AObservação: ${item.observation}%0A------------------------------------------`
+        }
+
+        return `${itemText}%0A------------------------------------------`
+      })
+      .join("%0A------------------------------------------%0A")
+
+    const pedidoText = `*Olá, gostaria de fazer um pedido*%0A*Os itens escolhidos são:*%0A%0A${itemsText}%0A%0AResumo de valores:*%0ASubtotal: R$ ${subtotal.toFixed(
+      2
+    )} %0ATaxa de Entrega: R$ ${deliveryFee.toFixed(
+      2
+    )} %0ATotal: R$ ${total.toFixed(
+      2
+    )} %0A%0A*Forma de Pagamento:* ${selectedPaymentMethod} %0A%0A*Endereço para entrega:*%0A*CEP*: ${cep}%0A*Rua:* ${address}%0A*Número:* ${number}%0A*Complemento:* ${complement}%0A*Bairro:* ${neighborhood}%0A*Cidade:* ${city}%0A*UF:* ${uf}`
+
+    const whatsappLink = `https://api.whatsapp.com/send?phone=5577988129537&text=${pedidoText}`
+
+    window.open(whatsappLink, "_blank")
   }
 
   return (
@@ -82,6 +214,9 @@ export default function Cart() {
                       R$ {item.price.toFixed(2)} x {item.quantity} ={" "}
                       {(item.price * item.quantity!).toFixed(2)}
                     </p>
+                    {item.observation && (
+                      <p className="text-xs">Observation: {item.observation}</p>
+                    )}
                   </div>
                   <div className="cursor-pointer flex flex-col gap-4 items-end">
                     <div className="flex flex-col items-center gap-2">
@@ -106,31 +241,40 @@ export default function Cart() {
             </div>
           )}
 
-          <div className="bg-yellow-dark rounded-2xl flex flex-col items-center py-5 px-7 text-center">
-            <div>
-              <p className="uppercase text-white">Brindes</p>
-            </div>
-
-            <p>Você acaba de ganhar 2x mini refrigerantes!</p>
-          </div>
-
           <div className="flex flex-col gap-2">
-            <p>Resumo de valores</p>
+            {cart.length > 0 && (
+              <div className="flex flex-col gap-8">
+                <div className="bg-yellow-dark rounded-2xl flex flex-col items-center py-5 px-7 text-center">
+                  <div>
+                    <p className="uppercase text-white">Brindes</p>
+                  </div>
 
-            <div className="flex items-center justify-between">
-              <p className="italic">Subtotal</p>
-              <p>R$ 27,00</p>
-            </div>
+                  <p>
+                    Você acaba de ganhar {miniRefrigerantes}x mini
+                    refrigerantes!
+                  </p>
+                </div>
 
-            <div className="flex items-center justify-between">
-              <p className="italic">Taxa de entrega</p>
-              <p>R$ 05,00</p>
-            </div>
+                <div className="flex flex-col gap-2">
+                  <p>Resumo de valores</p>
 
-            <div className="flex items-center justify-between">
-              <p className="italic">Total</p>
-              <p>R$ 32,00</p>
-            </div>
+                  <div className="flex items-center justify-between mt-4">
+                    <p className="italic">Subtotal</p>
+                    <p>R$ {subtotal.toFixed(2)}</p>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <p className="italic">Taxa de entrega</p>
+                    <p>R$ {deliveryFee.toFixed(2)}</p>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <p className="italic">Total</p>
+                    <p>R$ {total.toFixed(2)}</p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -153,22 +297,32 @@ export default function Cart() {
             <Input
               type="text"
               placeholder="CEP"
+              value={cep}
+              onChange={handleInputChange("cep")}
               className="border rounded-md p-3 focus:outline-yellow-dark"
             />
+
             <Input
               type="text"
               placeholder="Rua"
+              value={address}
+              onChange={handleInputChange("address")}
               className="border rounded-md p-3 focus:outline-yellow-dark"
             />
+
             <div className="grid grid-cols-2 gap-2">
               <Input
                 type="text"
                 placeholder="Número"
+                value={number}
+                onChange={handleInputChange("number")}
                 className="border rounded-md p-3 focus:outline-yellow-dark"
               />
               <Input
                 type="text"
                 placeholder="Complemento"
+                value={complement}
+                onChange={handleInputChange("complement")}
                 className="border rounded-md p-3 focus:outline-yellow-dark"
               />
             </div>
@@ -176,17 +330,23 @@ export default function Cart() {
               <Input
                 type="text"
                 placeholder="Bairro"
+                value={neighborhood}
+                onChange={handleInputChange("neighborhood")}
                 className="border rounded-md p-3 focus:outline-yellow-dark"
               />
               <Input
                 type="text"
                 placeholder="UF"
+                value={uf}
+                onChange={handleInputChange("uf")}
                 className="border rounded-md p-3 focus:outline-yellow-dark"
               />
             </div>
             <Input
               type="text"
               placeholder="Cidade"
+              value={city}
+              onChange={handleInputChange("city")}
               className="border rounded-md p-3 focus:outline-yellow-dark"
             />
           </form>
@@ -208,21 +368,42 @@ export default function Cart() {
         </div>
 
         <div className="flex flex-col gap-3">
-          <button className="flex items-center gap-3 bg-base-button border rounded-md p-4 hover:border-purple transition-all duration-75 uppercase  text-xs">
+          <button
+            className={`flex items-center gap-3 bg-base-button border rounded-md p-4 hover:border-purple transition-all duration-75 uppercase text-xs ${
+              selectedPaymentMethod === "Cartao de Credito"
+                ? "border border-yellow-dark transition-all duration-150"
+                : ""
+            }`}
+            onClick={() => handlePaymentMethodSelection("Cartao de Credito")}
+          >
             <div className="text-2xl">
               <FiCreditCard />
             </div>
             <span>Cartão de Crédito</span>
           </button>
 
-          <button className="flex items-center gap-3 bg-base-button border rounded-md p-4 hover:border-purple transition-all duration-75 uppercase  text-xs">
+          <button
+            className={`flex items-center gap-3 bg-base-button border rounded-md p-4 hover:border-purple transition-all duration-75 uppercase text-xs ${
+              selectedPaymentMethod === "Cartao de Debito"
+                ? "border border-yellow-dark transition-all duration-150"
+                : ""
+            }`}
+            onClick={() => handlePaymentMethodSelection("Cartao de Debito")}
+          >
             <div className="text-2xl">
               <PiBankDuotone />
             </div>
             <span>Cartão de Débito</span>
           </button>
 
-          <button className="flex items-center gap-3 bg-base-button border rounded-md p-4 hover:border-purple transition-all duration-75 uppercase  text-xs">
+          <button
+            className={`flex items-center gap-3 bg-base-button border rounded-md p-4 hover:border-purple transition-all duration-75 uppercase text-xs ${
+              selectedPaymentMethod === "Dinheiro ou Pix"
+                ? "border border-yellow-dark transition-all duration-150"
+                : ""
+            }`}
+            onClick={() => handlePaymentMethodSelection("Dinheiro ou Pix")}
+          >
             <div className="text-2xl">
               <PiMoney />
             </div>
@@ -230,6 +411,17 @@ export default function Cart() {
           </button>
         </div>
       </section>
+
+      <div className="flex items-center justify-center mt-12">
+        <button
+          className="bg-red-dark text-white px-4 py-2 rounded-lg"
+          onClick={handleFinishOrder}
+        >
+          Finalizar Pedido
+        </button>
+      </div>
+
+      <ToastContainer />
     </div>
   )
 }
