@@ -15,6 +15,7 @@ type Food = {
   price: number
   ingredients: string
   quantity?: number
+  observation?: string
 }
 
 type AppContextType = {
@@ -30,7 +31,7 @@ type AppContextType = {
   removeFromCart: (itemId: string) => void
 }
 
-type FoodWithQuantity = Food & { quantity: number }
+type FoodWithQuantity = Food & { quantity: number; observation?: string }
 
 const AppContext = createContext<AppContextType | undefined>(undefined)
 
@@ -48,11 +49,14 @@ export function AppContextProvider({ children }: AppContextProviderProps) {
       const updatedCart = [...cart]
       updatedCart[existingItemIndex].quantity +=
         (food as FoodWithQuantity).quantity || 1
+      updatedCart[existingItemIndex].observation =
+        (food as FoodWithQuantity).observation || ""
       setCart(updatedCart)
     } else {
       const foodWithQuantity: FoodWithQuantity = {
         ...(food as FoodWithQuantity),
         quantity: (food as FoodWithQuantity).quantity || 1,
+        observation: (food as FoodWithQuantity).observation || "",
       }
       setCart((prevCart) => [...prevCart, foodWithQuantity])
     }

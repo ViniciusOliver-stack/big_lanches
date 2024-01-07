@@ -14,7 +14,7 @@ export default function Home() {
         <Header />
 
         <section className="mt-16 px-8 pb-12">
-          <ul className="flex items-center justify-between">
+          <ul className="flex items-center justify-around">
             <FilterFood />
             <FilterFood />
             <FilterFood />

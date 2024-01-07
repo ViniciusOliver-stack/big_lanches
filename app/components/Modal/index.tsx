@@ -11,6 +11,8 @@ type Food = {
 
 type FoodWithQuantity = Food & { quantity: number }
 
+type FoodWithObservation = FoodWithQuantity & { observation: string }
+
 type ModalProps = {
   closeModal: () => void
   food: FoodWithQuantity
@@ -53,8 +55,12 @@ export function Modal({ closeModal, food }: ModalProps) {
   }
 
   function handleAddClick() {
-    const updatedFood: FoodWithQuantity = { ...food, quantity }
-    addToCart(updatedFood)
+    const foodWithObservation: FoodWithObservation = {
+      ...food,
+      quantity,
+      observation,
+    }
+    addToCart(foodWithObservation)
     closeModal()
   }
 
