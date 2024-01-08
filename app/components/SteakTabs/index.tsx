@@ -57,7 +57,7 @@ const SteakTabs = () => {
     <div className="py-2">
       <section className="w-full flex flex-col gap-5 mt-4 shadow-xl rounded-lg p-4">
         <h3>Escolha o tipo de bife</h3>
-        <div className="flex flex-wrap items-center gap-4 text-sm xs:text-base lg:flex-nowrap">
+        <div className="flex md:flex-wrap items-center gap-4 text-sm xs:text-base lg:flex-nowrap overflow-x-auto p-4">
           {tabs.map((tab) => (
             <button
               key={tab.id}

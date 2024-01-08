@@ -23,13 +23,13 @@ export function Header() {
             width={500}
             height={500}
             alt={""}
-            className="w-20"
+            className="w-24"
           />
         </div>
 
-        <Search />
+        {/* <Search /> */}
 
-        <div className="text-2xl lg:hidden">
+        <div className="text-4xl lg:hidden">
           <Link href="/cart">
             <FiShoppingCart />
           </Link>
