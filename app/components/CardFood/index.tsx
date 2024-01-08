@@ -9,6 +9,7 @@ type Food = {
   name: string
   price: number
   ingredients: string
+  imageFood: string
 }
 
 type FoodWithQuantity = Food & { quantity: number }
@@ -45,10 +46,11 @@ export function CardFood() {
               <div className="flex gap-1 justify-between w-full" key={1}>
                 <div className="flex gap-3 mb-4">
                   <Image
-                    src="https://i.imgur.com/GTgaZIH.png"
+                    src={food.imageFood}
                     width={66}
                     height={66}
                     alt=""
+                    className="object-cover h-14 w-14"
                   />
                   <div>
                     <p>{food.name}</p>
