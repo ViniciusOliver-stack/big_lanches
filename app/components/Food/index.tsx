@@ -10,7 +10,7 @@ export function Food() {
         <SteakTabs />
       </div>
 
-      <div id="sectionCachorroQuente">
+      <div id="sectionHotdog">
         <h2 className="text-2xl">Cachorro-quente</h2>
 
         <CardFood />
