@@ -34,7 +34,7 @@ interface AddressState {
 
 export default function Cart() {
   const { cart, updateCartItemQuantity, removeFromCart } = useAppContext()
-  const [deliveryFee, setDeliveryFee] = useState(6) // Set the default delivery fee
+  const [deliveryFee, setDeliveryFee] = useState(6)
   const [subtotal, setSubtotal] = useState(0)
   const [total, setTotal] = useState(subtotal + deliveryFee)
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>("")
