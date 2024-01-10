@@ -18,7 +18,7 @@ export function CardDrinks() {
       {listDrinks.map((drinks) => (
         <div
           key={drinks.id}
-          className={`mt-4 shadow-xl p-2 rounded-md transition-transform duration-300 ease-in-out w-[130px] text-center ${
+          className={`mt-4 shadow-[0_3px_10px_rgb(0,0,0,0.2)] p-2 rounded-md transition-transform duration-300 ease-in-out w-[130px] text-center ${
             expandedCard === drinks.id
           }`}
         >
@@ -32,7 +32,7 @@ export function CardDrinks() {
               />
             </div>
             <div className="flex flex-col gap-1">
-              <p>{drinks.name}</p>
+              <p className="text-lg">{drinks.name}</p>
               <p>R$ {drinks.price}</p>
             </div>
             <div
