@@ -20,6 +20,7 @@ import { PiBankDuotone, PiMoney } from "react-icons/pi"
 import Logo from "../assets/logo.svg"
 import { Input } from "../components/Input"
 import { useAppContext } from "../hook/AppContext"
+import cartEmpty from "../assets/cartEmpty.svg"
 
 interface AddressState {
   cep: string
@@ -179,7 +180,7 @@ export default function Cart() {
       <header className="flex items-center gap-2 mt-8 lg:mt-2">
         <Image src={Logo} alt="" width={66} height={66} />
         <div>
-          <p>Big Lanches - Trailer do Edélio</p>
+          <p className="text-xl">Big Lanches - Trailer do Edélio</p>
           <Link href="/">
             <p className="text-red-dark">Adicionar mais lanches</p>
           </Link>
@@ -187,11 +188,16 @@ export default function Cart() {
       </header>
 
       <section className="mt-8">
-        <h3>Finalize seu pedido</h3>
+        <h3 className="md:text-3xl md:font-medium">Finalize seu pedido</h3>
 
-        <div className="flex flex-col gap-5 mt-4 shadow-xl p-4 rounded-lg">
+        <div className="flex flex-col gap-5 mt-4 shadow-[0_3px_10px_rgb(0,0,0,0.2)] p-4 rounded-lg">
           {cart.length === 0 ? (
-            <div>Ops, não tem nenhum lanche aqui.</div>
+            <div className="w-full flex flex-col items-center justify-center gap-4">
+              <Image src={cartEmpty} width={150} height={150} alt="" />
+              <p className="md:text-lg font-medium">
+                Ops, não tem nenhum lanche aqui.
+              </p>
+            </div>
           ) : (
             <div>
               {cart.map((item) => (
@@ -279,14 +285,14 @@ export default function Cart() {
         </div>
       </section>
 
-      <section className="flex flex-col gap-5 mt-4 shadow-xl rounded-lg p-4">
+      <section className="flex flex-col gap-5 mt-4 shadow-[0_3px_10px_rgb(0,0,0,0.2)] rounded-lg p-4">
         <div>
           <div className="flex items-center gap-3">
             <div className="text-2xl text-red-dark">
               <FiMapPin />
             </div>
             <div>
-              <p>Endereço de Entrega</p>
+              <p className="text-lg font-medium">Endereço de Entrega</p>
               <p className="text-xs">
                 Informe o endereço onde deseja receber seu pedido.
               </p>
@@ -353,7 +359,7 @@ export default function Cart() {
         </div>
       </section>
 
-      <section className="flex flex-col gap-5 mt-4 shadow-xl rounded-lg p-4">
+      <section className="flex flex-col gap-5 mt-4 shadow-[0_3px_10px_rgb(0,0,0,0.2)] rounded-lg p-4">
         <div className="flex items-center gap-3">
           <div className="text-2xl text-red-dark">
             <div className="text-2xl">
@@ -361,7 +367,7 @@ export default function Cart() {
             </div>
           </div>
           <div>
-            <p>Forma de pagamento</p>
+            <p className="text-lg font-medium">Forma de pagamento</p>
             <p className="text-xs">O pagamento é feito na entrega.</p>
             <p className="text-xs">Escolha o meio de pagamento</p>
           </div>
