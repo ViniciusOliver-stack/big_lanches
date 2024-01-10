@@ -3,6 +3,7 @@ import { Plus } from "lucide-react"
 import Image from "next/image"
 import { useState } from "react"
 import { Modal } from "../Modal"
+import { motion } from "framer-motion"
 
 type Food = {
   id: string
@@ -35,12 +36,15 @@ export function CardFood() {
   }
 
   return (
-    <div className="w-full flex flex-col gap-2 mt-4 shadow-xl rounded-lg p-4">
+    <div className="w-full flex flex-col gap-2 mt-4 shadow-[0_3px_10px_rgb(0,0,0,0.2)] rounded-lg p-4">
       {listHotDog.map((food) => {
         return (
-          <div
+          <motion.div
             className="flex items-center gap-2 justify-between mt-4 w-full"
             key={food.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
           >
             <div className="w-full">
               <div className="flex gap-1 justify-between w-full" key={1}>
@@ -53,9 +57,14 @@ export function CardFood() {
                     className="object-cover h-14 w-14"
                   />
                   <div>
-                    <p>{food.name}</p>
+                    <p className="font-medium md:text-lg">{food.name}</p>
                     <p className="text-xs w-10/12">{food.ingredients}</p>
-                    <p>R$ {food.price.toFixed(2)}</p>
+                    <p>
+                      R${" "}
+                      <span className="text-red-dark font-medium text-lg">
+                        {food.price.toFixed(2)}
+                      </span>
+                    </p>
                   </div>
                 </div>
                 <button onClick={() => openModal(food)}>
@@ -63,7 +72,7 @@ export function CardFood() {
                 </button>
               </div>
             </div>
-          </div>
+          </motion.div>
         )
       })}
 

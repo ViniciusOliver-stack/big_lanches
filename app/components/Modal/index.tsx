@@ -1,4 +1,5 @@
 import { useAppContext } from "@/app/hook/AppContext"
+import { motion } from "framer-motion"
 import { useState, useEffect } from "react"
 import { FiMinus, FiPlus } from "react-icons/fi"
 
@@ -21,6 +22,23 @@ type ModalProps = {
 export function Modal({ closeModal, food }: ModalProps) {
   const [quantity, setQuantity] = useState(food.quantity || 1)
   const [observation, setObservation] = useState("")
+
+  const modalVariants = {
+    hidden: { opacity: 0, y: -20 },
+    visible: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -20 },
+  }
+
+  const overlayVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1 },
+    exit: { opacity: 0 },
+  }
+
+  const transition = {
+    duration: 0.4,
+    delay: 0.2,
+  }
 
   const { addToCart } = useAppContext()
 
@@ -74,8 +92,22 @@ export function Modal({ closeModal, food }: ModalProps) {
 
   return (
     <>
-      <div className="fixed inset-0 overflow-y-auto overflow-x-hidden z-50 flex justify-center items-center bg-black/80">
-        <div className="relative p-4 w-full max-w-md max-h-full">
+      <motion.div
+        className="fixed inset-0 overflow-y-auto overflow-x-hidden z-50 flex justify-center items-center bg-black/80"
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+        variants={overlayVariants}
+        transition={transition}
+      >
+        <motion.div
+          className="relative p-4 w-full max-w-md max-h-full"
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          variants={modalVariants}
+          transition={transition}
+        >
           <div className="relative bg-white rounded-lg shadow">
             <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
               <h3 className="text-lg font-semibold text-gray-900">
@@ -158,8 +190,8 @@ export function Modal({ closeModal, food }: ModalProps) {
               </button>
             </div>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </>
   )
 }

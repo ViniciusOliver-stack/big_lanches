@@ -1,7 +1,8 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Image from "next/image"
 import { useAppContext } from "@/app/hook/AppContext"
 import { Plus } from "lucide-react"
+import { motion, AnimateSharedLayout } from "framer-motion"
 import { Modal } from "../Modal"
 
 type Food = {
@@ -55,12 +56,17 @@ const SteakTabs = () => {
 
   return (
     <div className="py-2">
-      <section className="w-full flex flex-col gap-5 mt-4 shadow-xl rounded-lg p-4">
-        <h3>Escolha o tipo de bife</h3>
-        <div className="flex md:flex-wrap items-center gap-4 text-sm xs:text-base lg:flex-nowrap overflow-x-auto p-4">
+      <section className="w-full flex flex-col gap-5 mt-4 shadow-[0_3px_10px_rgb(0,0,0,0.2)] rounded-lg p-4">
+        <h3 className="text-xl mt-4">Escolha o tipo de bife</h3>
+        <div className="flex md:flex-wrap items-center gap-4 text-sm xs:text-base lg:flex-nowrap overflow-x-auto py-4">
           {tabs.map((tab) => (
-            <button
+            <motion.button
               key={tab.id}
+              layoutId={tab.id}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.2 }}
               className={`${
                 activeTab === tab.id
                   ? "bg-red-dark text-white"
@@ -68,8 +74,8 @@ const SteakTabs = () => {
               } px-4 py-2 rounded-md transition-all duration-300 focus:outline-none`}
               onClick={() => handleTabChange(tab.id)}
             >
-              {tab.label}
-            </button>
+              <p className="whitespace-nowrap">{tab.label}</p>
+            </motion.button>
           ))}
         </div>
 
@@ -82,9 +88,12 @@ const SteakTabs = () => {
               <div className="w-full">
                 {tab.list.map((food) => {
                   return (
-                    <div
+                    <motion.div
                       className="flex gap-1 justify-between w-full"
                       key={food.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5 }}
                     >
                       <div className="flex gap-3 mb-4">
                         <Image
@@ -95,15 +104,20 @@ const SteakTabs = () => {
                           className="object-cover h-14 w-auto"
                         />
                         <div>
-                          <p>{food.name}</p>
+                          <p className="font-medium md:text-lg">{food.name}</p>
                           <p className="text-xs w-10/12">{food.ingredients}</p>
-                          <p>R$ {food.price.toFixed(2)}</p>
+                          <p>
+                            R${" "}
+                            <span className="text-red-dark font-medium text-lg">
+                              {food.price.toFixed(2)}
+                            </span>
+                          </p>
                         </div>
                       </div>
                       <button onClick={() => openModal(food)}>
                         <Plus />
                       </button>
-                    </div>
+                    </motion.div>
                   )
                 })}
               </div>
