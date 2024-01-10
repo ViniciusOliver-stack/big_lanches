@@ -1,9 +1,9 @@
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import { DM_Sans } from "next/font/google"
 import "./globals.css"
 import { AppContextProvider } from "./hook/AppContext"
 
-const inter = Inter({ subsets: ["latin"] })
+const dmSans = DM_Sans({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "Big lanches - Trailer do Edelio",
@@ -18,7 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <body className={inter.className}>
+      <body className={dmSans.className}>
         <AppContextProvider>{children}</AppContextProvider>
       </body>
     </html>
