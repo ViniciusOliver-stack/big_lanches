@@ -1,77 +1,80 @@
-"use client"
+"use client";
 
-import { ReactNode, createContext, useContext, useState } from "react"
+import { ReactNode, createContext, useContext, useState } from "react";
 
-import { listDrinks } from "@utils/listDrinks"
-import { listHotDog } from "@utils/listHotDog"
-import { listBifeComum } from "@utils/listBifeComum"
-import { listBifePicanha } from "@utils/listBifePicanha"
-import { listBifeFrango } from "@utils/listBifeFrango"
-import { listBifeArtesanal } from "@utils/listBifeArtesanal"
+import { listDrinks } from "@utils/listDrinks";
+import { listHotDog } from "@utils/listHotDog";
+import { listBifeComum } from "@utils/listBifeComum";
+import { listBifePicanha } from "@utils/listBifePicanha";
+import { listBifeFrango } from "@utils/listBifeFrango";
+import { listBifeArtesanal } from "@utils/listBifeArtesanal";
 
-type Food = {
-  id: string
-  name: string
-  price: number
-  ingredients: string
-  quantity?: number
-  observation?: string
-}
+type Item = {
+  id: string;
+  name: string;
+  price: number;
+  image: string;
+  quantity?: number;
+  ingredients?: string | null;
+  observation?: string | null;
+};
 
 type AppContextType = {
-  listDrinks: typeof listDrinks
-  listBifeComum: typeof listBifeComum
-  listBifePicanha: typeof listBifePicanha
-  listBifeFrango: typeof listBifeFrango
-  listBifeArtesanal: typeof listBifeArtesanal
-  listHotDog: typeof listHotDog
-  cart: Food[]
-  addToCart: (food: Food) => void
-  updateCartItemQuantity: (itemId: string, quantity: number) => void
-  removeFromCart: (itemId: string) => void
-}
+  listDrinks: typeof listDrinks;
+  listBifeComum: typeof listBifeComum;
+  listBifePicanha: typeof listBifePicanha;
+  listBifeFrango: typeof listBifeFrango;
+  listBifeArtesanal: typeof listBifeArtesanal;
+  listHotDog: typeof listHotDog;
+  cart: Item[];
+  addToCart: (item: Item) => void;
+  updateCartItemQuantity: (itemId: string, quantity: number) => void;
+  removeFromCart: (itemId: string) => void;
+};
 
-type FoodWithQuantity = Food & { quantity: number; observation?: string }
+type ItemWithQuantity = Item & { quantity: number; observation?: string };
 
-const AppContext = createContext<AppContextType | undefined>(undefined)
+const AppContext = createContext<AppContextType | undefined>(undefined);
 
 type AppContextProviderProps = {
-  children: ReactNode
-}
+  children: ReactNode;
+};
 
 export function AppContextProvider({ children }: AppContextProviderProps) {
-  const [cart, setCart] = useState<FoodWithQuantity[]>([])
+  const [cart, setCart] = useState<ItemWithQuantity[]>([]);
 
-  function addToCart(food: Food | FoodWithQuantity) {
-    const existingItemIndex = cart.findIndex((item) => item.id === food.id)
+  function addToCart(item: Item | ItemWithQuantity) {
+    const existingItemIndex = cart.findIndex(
+      (cartItem) => cartItem.id === item.id
+    );
 
     if (existingItemIndex !== -1) {
-      const updatedCart = [...cart]
+      const updatedCart = [...cart];
       updatedCart[existingItemIndex].quantity +=
-        (food as FoodWithQuantity).quantity || 1
+        (item as ItemWithQuantity).quantity || 1;
       updatedCart[existingItemIndex].observation =
-        (food as FoodWithQuantity).observation || ""
-      setCart(updatedCart)
+        (item as ItemWithQuantity).observation || "";
+      setCart(updatedCart);
     } else {
-      const foodWithQuantity: FoodWithQuantity = {
-        ...(food as FoodWithQuantity),
-        quantity: (food as FoodWithQuantity).quantity || 1,
-        observation: (food as FoodWithQuantity).observation || "",
-      }
-      setCart((prevCart) => [...prevCart, foodWithQuantity])
+      const itemWithQuantity: ItemWithQuantity = {
+        ...(item as ItemWithQuantity),
+        quantity: (item as ItemWithQuantity).quantity || 1,
+        observation: (item as ItemWithQuantity).observation || "",
+      };
+      setCart((prevCart) => [...prevCart, itemWithQuantity]);
     }
   }
 
   function updateCartItemQuantity(itemId: string, quantity: number) {
     const updatedCart = cart.map((item) =>
       item.id === itemId ? { ...item, quantity } : item
-    )
-    setCart(updatedCart)
+    );
+    setCart(updatedCart);
   }
 
   function removeFromCart(itemId: string) {
-    const updatedCart = cart.filter((item) => item.id !== itemId)
-    setCart(updatedCart)
+    const updatedCart = cart.filter((item) => item.id !== itemId);
+    setCart(updatedCart);
   }
 
   return (
@@ -91,13 +94,13 @@ export function AppContextProvider({ children }: AppContextProviderProps) {
     >
       {children}
     </AppContext.Provider>
-  )
+  );
 }
 
 export const useAppContext = () => {
-  const context = useContext(AppContext)
+  const context = useContext(AppContext);
   if (!context) {
-    throw new Error("useAppContext must be used within an AppContextProvider")
+    throw new Error("useAppContext must be used within an AppContextProvider");
   }
-  return context
-}
+  return context;
+};

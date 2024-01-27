@@ -1,43 +1,38 @@
-import { useEffect, useState } from "react"
-import Image from "next/image"
-import { useAppContext } from "@/app/hook/AppContext"
-import { Plus } from "lucide-react"
-import { motion, AnimateSharedLayout } from "framer-motion"
-import { Modal } from "../Modal"
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import { useAppContext } from "@/app/hook/AppContext";
+import { Plus } from "lucide-react";
+import { motion, AnimateSharedLayout } from "framer-motion";
+import { Modal } from "../Modal";
 
 type Food = {
-  id: string
-  name: string
-  price: number
-  ingredients: string
-  imageFood?: string
-}
+  id: string;
+  name: string;
+  price: number;
+  ingredients: string;
+  image: string;
+};
 
-type FoodWithQuantity = Food & { quantity: number }
+type FoodWithQuantity = Food & { quantity: number };
 
 const SteakTabs = () => {
-  const [activeTab, setActiveTab] = useState("picanha")
+  const [activeTab, setActiveTab] = useState("picanha");
   const [selectedFood, setSelectedFood] = useState<FoodWithQuantity | null>(
     null
-  )
+  );
 
-  const {
-    listBifeArtesanal,
-    listBifeComum,
-    listBifeFrango,
-    listBifePicanha,
-    addToCart,
-  } = useAppContext()
+  const { listBifeArtesanal, listBifeComum, listBifeFrango, listBifePicanha } =
+    useAppContext();
 
   const tabs = [
     { id: "picanha", label: "Bife de Picanha", list: listBifePicanha },
     { id: "comum", label: "Bife Comum", list: listBifeComum },
     { id: "frango", label: "Bife de Frango", list: listBifeFrango },
     { id: "artesanal", label: "Bife Artesanal", list: listBifeArtesanal },
-  ]
+  ];
 
   function handleTabChange(tabId: string) {
-    setActiveTab(tabId)
+    setActiveTab(tabId);
   }
 
   function openModal(food: Food) {
@@ -45,13 +40,13 @@ const SteakTabs = () => {
       ...food,
       price: Number(food.price),
       quantity: 1,
-    }
+    };
 
-    setSelectedFood(foodWithNumberPrice)
+    setSelectedFood(foodWithNumberPrice);
   }
 
   function closeModal() {
-    setSelectedFood(null)
+    setSelectedFood(null);
   }
 
   return (
@@ -86,7 +81,7 @@ const SteakTabs = () => {
           >
             <div className="flex items-center gap-2 justify-between mt-4 w-full">
               <div className="w-full">
-                {tab.list.map((food) => {
+                {tab.list.map((food: any) => {
                   return (
                     <motion.div
                       className="flex gap-1 justify-between w-full"
@@ -97,7 +92,7 @@ const SteakTabs = () => {
                     >
                       <div className="flex gap-3 mb-4">
                         <Image
-                          src={food.imageFood}
+                          src={food.image}
                           width={66}
                           height={66}
                           alt=""
@@ -118,7 +113,7 @@ const SteakTabs = () => {
                         <Plus />
                       </button>
                     </motion.div>
-                  )
+                  );
                 })}
               </div>
             </div>
@@ -128,12 +123,12 @@ const SteakTabs = () => {
         {selectedFood && (
           <Modal
             closeModal={closeModal}
-            food={selectedFood as FoodWithQuantity}
+            item={selectedFood as FoodWithQuantity}
           />
         )}
       </section>
     </div>
-  )
-}
+  );
+};
 
-export default SteakTabs
+export default SteakTabs;

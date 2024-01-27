@@ -1,10 +1,7 @@
-import Image from "next/image"
+import Image from "next/image";
 
-import { FiShoppingCart } from "react-icons/fi"
-import { Search } from "../Search"
-
-import Logo from "../../assets/logo.svg"
-import Link from "next/link"
+import Logo from "../../assets/logo.svg";
+import FloatingButton from "@/app/components/FloatingButton/page";
 
 export function Header() {
   return (
@@ -29,11 +26,7 @@ export function Header() {
 
         {/* <Search /> */}
 
-        <div className="text-4xl lg:hidden">
-          <Link href="/cart">
-            <FiShoppingCart />
-          </Link>
-        </div>
+        <FloatingButton />
       </div>
 
       <div className="bg-black-medium mx-6 absolute -bottom-8 text-white rounded-2xl uppercase left-0 right-0  md:w-[450px] md:m-auto">
@@ -44,5 +37,5 @@ export function Header() {
         </p>
       </div>
     </header>
-  )
+  );
 }

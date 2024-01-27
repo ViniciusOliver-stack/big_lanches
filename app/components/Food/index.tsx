@@ -1,6 +1,6 @@
-import { CardDrinks } from "../CardDrinks"
-import { CardFood } from "../CardFood"
-import SteakTabs from "../SteakTabs"
+import { CardDrinks } from "../CardDrinks";
+import { CardFood } from "../CardFood";
+import SteakTabs from "../SteakTabs";
 
 export function Food() {
   return (
@@ -24,5 +24,5 @@ export function Food() {
         </div>
       </div>
     </section>
-  )
+  );
 }

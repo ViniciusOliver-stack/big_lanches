@@ -1,94 +1,95 @@
-import { useAppContext } from "@/app/hook/AppContext"
-import { motion } from "framer-motion"
-import { useState, useEffect } from "react"
-import { FiMinus, FiPlus } from "react-icons/fi"
+import { useAppContext } from "@/app/hook/AppContext";
+import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { FiMinus, FiPlus } from "react-icons/fi";
 
-type Food = {
-  id: string
-  name: string
-  price: number
-  ingredients: string
-}
+type Item = {
+  id: string;
+  name: string;
+  price: number;
+  ingredients?: string | null;
+  image: string;
+};
 
-type FoodWithQuantity = Food & { quantity: number }
+type ItemWithQuantity = Item & { quantity: number };
 
-type FoodWithObservation = FoodWithQuantity & { observation: string }
+type ItemWithObservation = ItemWithQuantity & { observation: string | null };
 
 type ModalProps = {
-  closeModal: () => void
-  food: FoodWithQuantity
-}
+  closeModal: () => void;
+  item: ItemWithQuantity;
+};
 
-export function Modal({ closeModal, food }: ModalProps) {
-  const [quantity, setQuantity] = useState(food.quantity || 1)
-  const [observation, setObservation] = useState("")
+export function Modal({ closeModal, item }: ModalProps) {
+  const [quantity, setQuantity] = useState(item?.quantity || 1);
+  const [observation, setObservation] = useState("");
 
   const modalVariants = {
     hidden: { opacity: 0, y: -20 },
     visible: { opacity: 1, y: 0 },
     exit: { opacity: 0, y: -20 },
-  }
+  };
 
   const overlayVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1 },
     exit: { opacity: 0 },
-  }
+  };
 
   const transition = {
     duration: 0.4,
     delay: 0.2,
-  }
+  };
 
-  const { addToCart } = useAppContext()
+  const { addToCart } = useAppContext();
 
   useEffect(() => {
     function handleEscapeKey(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        closeModal()
+        closeModal();
       }
     }
 
-    document.addEventListener("keydown", handleEscapeKey)
+    document.addEventListener("keydown", handleEscapeKey);
 
     return () => {
-      document.removeEventListener("keydown", handleEscapeKey)
-    }
-  }, [closeModal])
+      document.removeEventListener("keydown", handleEscapeKey);
+    };
+  }, [closeModal]);
 
   function increaseQuantity() {
-    setQuantity(quantity + 1)
+    setQuantity(quantity + 1);
   }
 
   function decreaseQuantity() {
     if (quantity > 1) {
-      setQuantity(quantity - 1)
+      setQuantity(quantity - 1);
     }
   }
 
-  const priceQuantity = food.price * quantity
+  const priceQuantity = item?.price * quantity;
 
   function handleObservationChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    setObservation(e.target.value)
+    setObservation(e.target.value);
   }
 
   function handleAddClick() {
-    const foodWithObservation: FoodWithObservation = {
-      ...food,
+    const ItemWithObservation: ItemWithObservation = {
+      ...item,
       quantity,
       observation,
-    }
-    addToCart(foodWithObservation)
-    closeModal()
+    };
+    addToCart(ItemWithObservation);
+    closeModal();
   }
 
   useEffect(() => {
-    document.body.style.overflow = "hidden"
+    document.body.style.overflow = "hidden";
 
     return () => {
-      document.body.style.overflow = ""
-    }
-  }, [])
+      document.body.style.overflow = "";
+    };
+  }, []);
 
   return (
     <>
@@ -111,7 +112,7 @@ export function Modal({ closeModal, food }: ModalProps) {
           <div className="relative bg-white rounded-lg shadow">
             <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
               <h3 className="text-lg font-semibold text-gray-900">
-                {food.name}
+                {item?.name}
               </h3>
               <button
                 type="button"
@@ -170,7 +171,7 @@ export function Modal({ closeModal, food }: ModalProps) {
               <p className="text-sm font-medium text-gray-900 mt-4">
                 Descrição:
               </p>
-              <p className="text-sm text-gray-700">{food.ingredients}</p>
+              <p className="text-sm text-gray-700">{item?.ingredients}</p>
 
               <p className="text-sm font-medium text-gray-900 mt-4">
                 Alguma observação?
@@ -193,5 +194,5 @@ export function Modal({ closeModal, food }: ModalProps) {
         </motion.div>
       </motion.div>
     </>
-  )
+  );
 }
