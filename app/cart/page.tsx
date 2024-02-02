@@ -171,7 +171,7 @@ export default function Cart() {
       2
     )} %0A%0A*Forma de Pagamento:* ${selectedPaymentMethod} %0A%0A*Endereço para entrega:*%0A*CEP*: ${cep}%0A*Rua:* ${address}%0A*Número:* ${number}%0A*Complemento:* ${complement}%0A*Bairro:* ${neighborhood}%0A*Cidade:* ${city}%0A*UF:* ${uf}`;
 
-    const whatsappLink = `https://api.whatsapp.com/send?phone=5577988129537&text=${pedidoText}`;
+    const whatsappLink = `https://api.whatsapp.com/send?phone=5531991137679&text=${pedidoText}`;
 
     window.open(whatsappLink, "_blank");
   };
