@@ -1,11 +1,11 @@
-"use client";
+"use client"
 
-import { useState, useEffect, ChangeEvent, useCallback } from "react";
-import { ArrowLeft } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { useState, useEffect, ChangeEvent, useCallback } from "react"
+import { ArrowLeft } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
+import { ToastContainer, toast } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 
 import {
   FiCreditCard,
@@ -14,31 +14,30 @@ import {
   FiMinus,
   FiPlus,
   FiTrash,
-} from "react-icons/fi";
-import { PiBankDuotone, PiMoney } from "react-icons/pi";
+} from "react-icons/fi"
+import { PiBankDuotone, PiMoney } from "react-icons/pi"
 
-import Logo from "../assets/logo.svg";
-import { Input } from "../components/Input";
-import { useAppContext } from "../hook/AppContext";
-import cartEmpty from "../assets/cartEmpty.svg";
+import Logo from "../assets/logo.svg"
+import { Input } from "../components/Input"
+import { useAppContext } from "../hook/AppContext"
+import cartEmpty from "../assets/cartEmpty.svg"
 
 interface AddressState {
-  cep: string;
-  address: string;
-  number: string;
-  complement: string;
-  neighborhood: string;
-  city: string;
-  uf: string;
+  cep: string
+  address: string
+  number: string
+  complement: string
+  neighborhood: string
+  city: string
+  uf: string
 }
 
 export default function Cart() {
-  const { cart, updateCartItemQuantity, removeFromCart } = useAppContext();
-  const [deliveryFee, setDeliveryFee] = useState(6);
-  const [subtotal, setSubtotal] = useState(0);
-  const [total, setTotal] = useState(subtotal + deliveryFee);
-  const [selectedPaymentMethod, setSelectedPaymentMethod] =
-    useState<string>("");
+  const { cart, updateCartItemQuantity, removeFromCart } = useAppContext()
+  const [deliveryFee, setDeliveryFee] = useState(6)
+  const [subtotal, setSubtotal] = useState(0)
+  const [total, setTotal] = useState(subtotal + deliveryFee)
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>("")
   const [addressState, setAddressState] = useState<AddressState>({
     cep: "",
     address: "",
@@ -47,26 +46,23 @@ export default function Cart() {
     neighborhood: "",
     city: "",
     uf: "",
-  });
-  const [miniRefrigerantes, setMiniRefrigerantes] = useState(0);
+  })
+  const [miniRefrigerantes, setMiniRefrigerantes] = useState(0)
 
   const { cep, address, number, complement, neighborhood, city, uf } =
-    addressState;
+    addressState
 
   useEffect(() => {
-    const totalLanches = cart.reduce(
-      (total, item) => total + item.quantity!,
-      0
-    );
-    const novaQuantidadeMiniRefrigerantes = totalLanches;
+    const totalLanches = cart.reduce((total, item) => total + item.quantity!, 0)
+    const novaQuantidadeMiniRefrigerantes = totalLanches
 
-    setMiniRefrigerantes(novaQuantidadeMiniRefrigerantes);
-  }, [cart]);
+    setMiniRefrigerantes(novaQuantidadeMiniRefrigerantes)
+  }, [cart])
 
   const fetchAddressInfo = useCallback(async () => {
     try {
-      const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-      const data = await response.json();
+      const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`)
+      const data = await response.json()
 
       if (!data.erro) {
         setAddressState((prev) => ({
@@ -77,91 +73,91 @@ export default function Cart() {
           neighborhood: data.bairro,
           city: data.localidade,
           uf: data.uf,
-        }));
+        }))
       }
     } catch (error) {
-      console.error("Error fetching address:", error);
+      console.error("Error fetching address:", error)
     }
-  }, [cep]);
+  }, [cep])
 
   useEffect(() => {
     if (cep.length >= 5) {
-      fetchAddressInfo();
+      fetchAddressInfo()
     }
-  }, [cep, fetchAddressInfo]);
+  }, [cep, fetchAddressInfo])
 
   const handleInputChange =
     (key: keyof AddressState) => (e: ChangeEvent<HTMLInputElement>) => {
-      setAddressState((prev) => ({ ...prev, [key]: e.target.value }));
-    };
+      setAddressState((prev) => ({ ...prev, [key]: e.target.value }))
+    }
 
   useEffect(() => {
     const newSubtotal = cart.reduce(
       (total, item) => total + item.price * item.quantity!,
       0
-    );
-    setSubtotal(newSubtotal);
+    )
+    setSubtotal(newSubtotal)
 
-    let newDeliveryFee = deliveryFee;
+    let newDeliveryFee = deliveryFee
 
     if (neighborhood.toLowerCase() === "brumal" || cep === "35966-971") {
-      newDeliveryFee = 15;
+      newDeliveryFee = 15
     }
 
-    setTotal(newSubtotal + newDeliveryFee);
+    setTotal(newSubtotal + newDeliveryFee)
 
-    setDeliveryFee(newDeliveryFee);
-  }, [cart, deliveryFee, neighborhood, cep]);
+    setDeliveryFee(newDeliveryFee)
+  }, [cart, deliveryFee, neighborhood, cep])
 
   const handlePaymentMethodSelection = (method: string) => {
-    setSelectedPaymentMethod(method);
-  };
+    setSelectedPaymentMethod(method)
+  }
 
   function handleIncrement(itemId: string) {
     updateCartItemQuantity(
       itemId,
       (cart.find((item) => item.id === itemId)?.quantity || 0) + 1
-    );
+    )
   }
 
   function handleDecrement(itemId: string) {
-    const selectedItem = cart.find((item) => item.id === itemId);
-    const newQuantity = Math.max((selectedItem?.quantity ?? 1) - 1, 1);
+    const selectedItem = cart.find((item) => item.id === itemId)
+    const newQuantity = Math.max((selectedItem?.quantity ?? 1) - 1, 1)
 
-    updateCartItemQuantity(itemId, newQuantity);
+    updateCartItemQuantity(itemId, newQuantity)
   }
 
   function handleRemove(itemId: string) {
-    removeFromCart(itemId);
+    removeFromCart(itemId)
   }
 
   const handleFinishOrder = () => {
     if (cart.length === 0) {
-      toast.error("Adicione itens ao carrinho antes de finalizar o pedido.");
-      return;
+      toast.error("Adicione itens ao carrinho antes de finalizar o pedido.")
+      return
     }
 
     if (!cep || !address || !selectedPaymentMethod) {
       toast.error(
         "Preencha todos os campos obrigatórios antes de finalizar o pedido."
-      );
-      return;
+      )
+      return
     }
 
     const itemsText = cart
       .map((item) => {
         const itemText = `*${item.name}*%0AQuantidade: ${
           item.quantity
-        }%0AValor: R$ ${(item.price * item.quantity!).toFixed(2)}`;
+        }%0AValor: R$ ${(item.price * item.quantity!).toFixed(2)}`
 
         // Inclua a observação se existir
         if (item.observation) {
-          return `${itemText}%0AObservação: ${item.observation}%0A------------------------------------------`;
+          return `${itemText}%0AObservação: ${item.observation}`
         }
 
-        return `${itemText}%0A------------------------------------------`;
+        return `${itemText}`
       })
-      .join("%0A------------------------------------------%0A");
+      .join("%0A------------------------------------------%0A")
 
     const pedidoText = `*Olá, gostaria de fazer um pedido*%0A*Os itens escolhidos são:*%0A%0A${itemsText}%0A%0AResumo de valores:*%0ASubtotal: R$ ${subtotal.toFixed(
       2
@@ -169,12 +165,12 @@ export default function Cart() {
       2
     )} %0ATotal: R$ ${total.toFixed(
       2
-    )} %0A%0A*Forma de Pagamento:* ${selectedPaymentMethod} %0A%0A*Endereço para entrega:*%0A*CEP*: ${cep}%0A*Rua:* ${address}%0A*Número:* ${number}%0A*Complemento:* ${complement}%0A*Bairro:* ${neighborhood}%0A*Cidade:* ${city}%0A*UF:* ${uf}`;
+    )} %0A%0A*Forma de Pagamento:* ${selectedPaymentMethod} %0A%0A*Endereço para entrega:*%0A*CEP*: ${cep}%0A*Rua:* ${address}%0A*Número:* ${number}%0A*Complemento:* ${complement}%0A*Bairro:* ${neighborhood}%0A*Cidade:* ${city}%0A*UF:* ${uf}`
 
-    const whatsappLink = `https://api.whatsapp.com/send?phone=5531991137679&text=${pedidoText}`;
+    const whatsappLink = `https://api.whatsapp.com/send?phone=5531991137679&text=${pedidoText}`
 
-    window.open(whatsappLink, "_blank");
-  };
+    window.open(whatsappLink, "_blank")
+  }
 
   return (
     <div className="px-4 py-6">
@@ -439,5 +435,5 @@ export default function Cart() {
 
       <ToastContainer />
     </div>
-  );
+  )
 }
