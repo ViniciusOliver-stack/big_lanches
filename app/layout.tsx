@@ -24,6 +24,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
+      <link rel="icon" href="/favicon.png" type="image/x-icon" />
       <body className={dmSans.className}>
         <AppContextProvider>{children}</AppContextProvider>
       </body>
