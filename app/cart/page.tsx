@@ -52,6 +52,9 @@ export default function Cart() {
   const { cep, address, number, complement, neighborhood, city, uf } =
     addressState
 
+  const [needsChange, setNeedsChange] = useState(false)
+  const [changeAmount, setChangeAmount] = useState("")
+
   useEffect(() => {
     const totalLanches = cart.reduce((total, item) => total + item.quantity!, 0)
     const novaQuantidadeMiniRefrigerantes = totalLanches
@@ -111,6 +114,8 @@ export default function Cart() {
 
   const handlePaymentMethodSelection = (method: string) => {
     setSelectedPaymentMethod(method)
+    setNeedsChange(false)
+    setChangeAmount("")
   }
 
   function handleIncrement(itemId: string) {
@@ -131,6 +136,19 @@ export default function Cart() {
     removeFromCart(itemId)
   }
 
+  const formatMoney = (value: string) => {
+    const cleanValue = value.replace(/[^\d]/g, "")
+
+    const integerPart = cleanValue.slice(0, -2) || "0"
+    const decimalPart = cleanValue.slice(-2)
+
+    const formattedIntegerPart = Number(integerPart).toLocaleString("pt-BR", {
+      minimumFractionDigits: 0,
+    })
+
+    return `R$ ${formattedIntegerPart},${decimalPart.padStart(2, "0")}`
+  }
+
   const handleFinishOrder = () => {
     if (cart.length === 0) {
       toast.error("Adicione itens ao carrinho antes de finalizar o pedido.")
@@ -144,13 +162,20 @@ export default function Cart() {
       return
     }
 
+    const cleanChangeAmount = changeAmount.replace(/[^\d]/g, "")
+
+    const formattedChangeAmount = new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+      minimumFractionDigits: 2,
+    }).format(Number(cleanChangeAmount) / 100)
+
     const itemsText = cart
       .map((item) => {
         const itemText = `*${item.name}*%0AQuantidade: ${
           item.quantity
         }%0AValor: R$ ${(item.price * item.quantity!).toFixed(2)}`
 
-        // Inclua a observação se existir
         if (item.observation) {
           return `${itemText}%0AObservação: ${item.observation}`
         }
@@ -159,13 +184,19 @@ export default function Cart() {
       })
       .join("%0A------------------------------------------%0A")
 
-    const pedidoText = `*Olá, gostaria de fazer um pedido*%0A*Os itens escolhidos são:*%0A%0A${itemsText}%0A%0AResumo de valores:*%0ASubtotal: R$ ${subtotal.toFixed(
+    let pedidoText = `*Olá, gostaria de fazer um pedido*%0A*Os itens escolhidos são:*%0A%0A${itemsText}%0A%0AResumo de valores:%0ASubtotal: R$ ${subtotal.toFixed(
       2
     )} %0ATaxa de Entrega: R$ ${deliveryFee.toFixed(
       2
     )} %0ATotal: R$ ${total.toFixed(
       2
-    )} %0A%0A*Forma de Pagamento:* ${selectedPaymentMethod} %0A%0A*Endereço para entrega:*%0A*CEP*: ${cep}%0A*Rua:* ${address}%0A*Número:* ${number}%0A*Complemento:* ${complement}%0A*Bairro:* ${neighborhood}%0A*Cidade:* ${city}%0A*UF:* ${uf}`
+    )} %0A%0A*Forma de Pagamento:* ${selectedPaymentMethod} %0A`
+
+    if (selectedPaymentMethod === "Dinheiro ou Pix" && needsChange) {
+      pedidoText += `%0ANecessita de troco: Sim (%20Troco%20de%20R$%20${formattedChangeAmount})`
+    }
+
+    pedidoText += `%0A%0A*Endereço para entrega:*%0A*CEP*: ${cep}%0A*Rua:* ${address}%0A*Número:* ${number}%0A*Complemento:* ${complement}%0A*Bairro:* ${neighborhood}%0A*Cidade:* ${city}%0A*UF:* ${uf}`
 
     const whatsappLink = `https://api.whatsapp.com/send?phone=5531991137679&text=${pedidoText}`
 
@@ -421,6 +452,32 @@ export default function Cart() {
             </div>
             <span>Dinheiro ou PIX</span>
           </button>
+
+          <div className="flex flex-col gap-3 mt-4">
+            <label className="inline-flex items-center">
+              <input
+                type="checkbox"
+                className="form-checkbox h-5 w-5 text-red-dark"
+                checked={needsChange}
+                onChange={(e) => setNeedsChange(e.target.checked)}
+              />
+              <span className="ml-2 text-lg font-medium text-red-dark">
+                Precisa de troco?
+              </span>
+            </label>
+
+            {selectedPaymentMethod === "Dinheiro ou Pix" && needsChange && (
+              <Input
+                type="text"
+                placeholder="Valor do Troco"
+                value={formatMoney(changeAmount)}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  setChangeAmount(e.target.value)
+                }
+                className="border rounded-md p-3 focus:outline-yellow-dark"
+              />
+            )}
+          </div>
         </div>
       </section>
 
