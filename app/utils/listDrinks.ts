@@ -1,17 +1,17 @@
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from "uuid"
 
 export const listDrinks = [
   {
     id: uuidv4(),
     name: "Refrigerante Lata",
     price: 5.0,
-    image: "https://i.imgur.com/5hjGuD8.png",
+    image: "https://i.imgur.com/FrSgJEY.png",
   },
   {
     id: uuidv4(),
     name: "Refrigerante 600ml",
     price: 9.0,
-    image: "https://i.imgur.com/5hjGuD8.png",
+    image: "https://i.imgur.com/7ODE45f.png",
   },
   {
     id: uuidv4(),
@@ -30,12 +30,12 @@ export const listDrinks = [
     name: "Suco Lata",
     price: 5.0,
 
-    image: "https://i.imgur.com/5hjGuD8.png",
+    image: "https://i.imgur.com/i6vtD2E.png",
   },
   {
     id: uuidv4(),
     name: "Suco 1L",
     price: 10.0,
-    image: "https://i.imgur.com/5hjGuD8.png",
+    image: "https://i.imgur.com/o10XqcR.png",
   },
-];
+]
