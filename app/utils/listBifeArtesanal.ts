@@ -52,7 +52,7 @@ export const listBifeArtesanal = [
   {
     id: uuidv4(),
     name: "X-Bacon Artesanal",
-    price: 27.0,
+    price: 25.0,
     ingredients:
       "Pão, bife artesanal, bacon, ovo, queijo, alface, tomate, batata palha e milho verde.",
     image: "https://i.imgur.com/xKwE76g.png",
